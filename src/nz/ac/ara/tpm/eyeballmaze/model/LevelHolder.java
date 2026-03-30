@@ -1,47 +1,37 @@
 package nz.ac.ara.tpm.eyeballmaze.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LevelHolder implements ILevelHolder {
-	private final List<Square[][]> levels = new ArrayList<>();
-	private  int currentLevelIndex = 0;
+	private List<Level> levels;
+	public Level currentLevel;
 
 	@Override
 	public void addLevel(int height, int width) {
-		Square[][] newLevel = new Square[height][width];
-		levels.add(newLevel);
-		currentLevelIndex = levels.size() - 1;
+		Level level = new Level(height, width);
+		levels.add(level);
 	}
 
 	@Override
 	public int getLevelWidth() {
-		if (levels.isEmpty()) {
-	        return 0;
-	    }
-		Square[][] currentLevel = levels.get(currentLevelIndex);
-		return currentLevel[0].length;
+		//add exceptions
+		return currentLevel.getLevelWidth();
 	}
 
 	@Override
 	public int getLevelHeight() {
-		if (levels.isEmpty()) {
-	        return 0;
-	    }
-		Square[][] currentLevel = levels.get(currentLevelIndex);
-		return currentLevel.length;
+		//add exceptions
+		return currentLevel.getLevelHeight();
 	}
 
 	@Override
 	public void setCurrentLevel(int levelNumber) {
-		// TODO Auto-generated method stub
-		currentLevelIndex = levelNumber;
+		this.currentLevel = levels.get(levelNumber);
 	}
 
 	@Override
 	public int getLevelCount() {
-		// TODO Auto-generated method stub
-		return levels.size();
+		return this.levels.size();
 	}
 
 }
