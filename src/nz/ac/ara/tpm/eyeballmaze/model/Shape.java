@@ -4,7 +4,7 @@ public enum Shape {
 	DIAMOND, 
 	CROSS, 
 	STAR, 
-	LOWER, 
+	FLOWER, 
 	BLANK, 
 	LIGHTNING 
 }
