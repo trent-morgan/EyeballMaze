@@ -15,13 +15,26 @@ public class SquareHolder implements ISquareHolder {
 
 	@Override
 	public Color getColorAt(int row, int column) {
-		return squares[row][column].color();
+		Square current = squares[row][column];
+
+		if (current instanceof PlayableSquare p) {
+		    return p.color(); 
+		} else if (current instanceof BlankSquare) {
+			return Color.BLANK;
+		}
+		return null;
 	}
 
 	@Override
 	public Shape getShapeAt(int row, int column) {
-		// TODO Auto-generated method stub
-		return squares[row][column].shape();
+		Square current = squares[row][column];
+
+		if (current instanceof PlayableSquare p) {
+		    return p.shape(); 
+		} else if (current instanceof BlankSquare) {
+			return Shape.BLANK;
+		}
+		return null;
 	}
 
 }
