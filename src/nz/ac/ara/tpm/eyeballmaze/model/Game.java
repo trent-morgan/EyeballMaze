@@ -4,13 +4,10 @@ public class Game implements IMoving, IEyeballHolder {
 	
 	private LevelHolder levelHolder;
 	private EyeballHolder eyeballHolder;
-	private Level currentLevel;
-
 	
-	public void main(String[] args) {
+	public Game() {
 		this.levelHolder = new LevelHolder();
 		this.eyeballHolder = new EyeballHolder();
-		this.currentLevel = levelHolder.currentLevel;
 	}
 	
 	//LEVELHOLDER ACCESS METHODS
@@ -38,31 +35,31 @@ public class Game implements IMoving, IEyeballHolder {
 	
 	//LEVEL ACESS METHODS
 	public void addGoal(int row, int column) {
-	    this.currentLevel.addGoal(row, column);
+	    this.levelHolder.getCurrentLevel().addGoal(row, column);
 	}
 
 	public int getGoalCount() {
-	    return this.currentLevel.getGoalCount();
+	    return this.levelHolder.getCurrentLevel().getGoalCount();
 	}
 
 	public boolean hasGoalAt(int targetRow, int targetColumn) {
-	    return this.currentLevel.hasGoalAt(targetRow, targetColumn);
+	    return this.levelHolder.getCurrentLevel().hasGoalAt(targetRow, targetColumn);
 	}
 
 	public int getCompletedGoalCount() {
-	    return this.currentLevel.getCompletedGoalCount();
+	    return this.levelHolder.getCurrentLevel().getCompletedGoalCount();
 	}
 
 	public void addSquare(Square square, int row, int column) {
-	    this.currentLevel.addSquare(square, row, column);
+	    this.levelHolder.getCurrentLevel().addSquare(square, row, column);
 	}
 
 	public Color getColorAt(int row, int column) {
-	    return this.currentLevel.getColorAt(row, column);
+	    return this.levelHolder.getCurrentLevel().getColorAt(row, column);
 	}
 
 	public Shape getShapeAt(int row, int column) {
-	    return this.currentLevel.getShapeAt(row, column);
+	    return this.levelHolder.getCurrentLevel().getShapeAt(row, column);
 	}
 	
 	// NEED TO DO
@@ -85,34 +82,70 @@ public class Game implements IMoving, IEyeballHolder {
 	//MOVE VALIDATING METHODS
 	@Override
 	public boolean canMoveTo(int destinationRow, int destinationColumn) {
-		// TODO Auto-generated method stub
+		
+		boolean dirOk = this.isDirectionOK(destinationRow, destinationColumn);
+		
+		if (dirOk) {
+			
+			boolean freePath = this.hasBlankFreePathTo(destinationRow, destinationColumn);
+			
+			if (freePath) {
+				
+				Color destColor = this.getColorAt(destinationRow, destinationColumn);
+				Color curColor = this.getColorAt(this.getEyeballRow(), this.getEyeballColumn());
+				Shape destShape = this.getShapeAt(destinationRow, destinationColumn);
+				Shape curShape = this.getShapeAt(this.getEyeballRow(), this.getEyeballColumn());
+				
+				if (destColor == curColor || destShape == curShape) {
+										
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public Message messageIfMovingTo(int destinationRow, int destinationColumn) {
-		// TODO Auto-generated method stub
-		return null;
+	    
+	    if (!this.isDirectionOK(destinationRow, destinationColumn)) {   	
+	    	return this.checkDirectionMessage(destinationRow, destinationColumn);
+	    }
+	    
+	    Color destColor = this.getColorAt(destinationRow, destinationColumn);
+	    Color curColor = this.getColorAt(this.getEyeballRow(), this.getEyeballColumn());
+	    Shape destShape = this.getShapeAt(destinationRow, destinationColumn);
+	    Shape curShape = this.getShapeAt(this.getEyeballRow(), this.getEyeballColumn());
+
+	    if (destColor != curColor && destShape != curShape) {
+	        return Message.DIFFERENT_SHAPE_OR_COLOR;
+	    }
+
+	    return checkMessageForBlankOnPathTo(destinationRow, destinationColumn);
 	}
 
 	@Override
 	public boolean isDirectionOK(int destinationRow, int destinationColumn) {
+		
+		if (destinationRow == this.getEyeballRow() && destinationColumn == this.getEyeballColumn()) {
+			return false;
+		}
 		
 		if (destinationRow == this.getEyeballRow() || destinationColumn == this.getEyeballColumn()) {
 			
 			Direction currentDir = this.getEyeballDirection();
 	        
 	        if (destinationRow < this.getEyeballRow() && currentDir == Direction.DOWN) {
-	            return false; // Target is UP, but we are facing DOWN (180 deg)
+	            return false; 
 	        }
 	        if (destinationRow > this.getEyeballRow() && currentDir == Direction.UP) {
-	            return false; // Target is DOWN, but we are facing UP (180 deg)
+	            return false; 
 	        }
 	        if (destinationColumn < this.getEyeballColumn() && currentDir == Direction.RIGHT) {
-	            return false; // Target is LEFT, but we are facing RIGHT (180 deg)
+	            return false; 
 	        }
 	        if (destinationColumn > this.getEyeballColumn() && currentDir == Direction.LEFT) {
-	            return false; // Target is RIGHT, but we are facing LEFT (180 deg)
+	            return false; 
 	        }
 
 	        return true;
@@ -122,26 +155,69 @@ public class Game implements IMoving, IEyeballHolder {
 
 	@Override
 	public Message checkDirectionMessage(int destinationRow, int destinationColumn) {
-		// TODO Auto-generated method stub
-		return null;
+		if (destinationRow != this.getEyeballRow() && destinationColumn != this.getEyeballColumn()) {
+            return Message.MOVING_DIAGONALLY;
+        }
+
+        return Message.BACKWARDS_MOVE;
 	}
 
 	@Override
 	public boolean hasBlankFreePathTo(int destinationRow, int destinationColumn) {
-		// TODO Auto-generated method stub
-		return false;
+	    if (!this.isDirectionOK(destinationRow, destinationColumn)) {
+	        return false;
+	    }
+
+	    int curRow = this.getEyeballRow();
+	    int curCol = this.getEyeballColumn();
+
+	    int rowStep = Integer.compare(destinationRow, curRow);
+	    int colStep = Integer.compare(destinationColumn, curCol);
+
+	    int checkRow = curRow + rowStep;
+	    int checkCol = curCol + colStep;
+
+	    while (checkRow != destinationRow || checkCol != destinationColumn) {
+	        if (this.getColorAt(checkRow, checkCol) == Color.BLANK) {
+	            return false;
+	        }
+
+	        checkRow += rowStep;
+	        checkCol += colStep;
+	    }
+
+	    return true;
 	}
 
 	@Override
 	public Message checkMessageForBlankOnPathTo(int destinationRow, int destinationColumn) {
-		// TODO Auto-generated method stub
-		return null;
+	    if (!this.hasBlankFreePathTo(destinationRow, destinationColumn)) {
+	        return Message.MOVING_OVER_BLANK;
+	    }
+	    return Message.OK;
 	}
 
 	@Override
 	public void moveTo(int destinationRow, int destinationColumn) {
-		// TODO Auto-generated method stub
+		
+		if (this.canMoveTo(destinationRow, destinationColumn)) {
+			
+			int oldRow = this.getEyeballRow();
+		    int oldCol = this.getEyeballColumn();
 
+		    Direction newDirection;
+
+		    if (destinationRow < oldRow) {
+		        newDirection = Direction.UP;
+		    } else if (destinationRow > oldRow) {
+		        newDirection = Direction.DOWN;
+		    } else if (destinationColumn < oldCol) {
+		        newDirection = Direction.LEFT;
+		    } else {
+		        newDirection = Direction.RIGHT;
+		    }
+		    
+		    this.addEyeball(destinationRow, destinationColumn, newDirection);
+		}
 	}
-
 }

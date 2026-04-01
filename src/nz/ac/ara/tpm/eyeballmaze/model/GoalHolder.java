@@ -1,22 +1,30 @@
 package nz.ac.ara.tpm.eyeballmaze.model;
 
-public class GoalHolder implements IGoalHolder {
+import java.util.ArrayList;
+import java.util.List;
 
+public class GoalHolder implements IGoalHolder {
+	private List<Position> goals = new ArrayList<>();
+	
 	@Override
 	public void addGoal(int row, int column) {
-		// TODO Auto-generated method stub
-
+		Position goal = new Position(row, column);
+		if (!goals.contains(goal)) {
+		    goals.add(goal);
+		}
 	}
 
 	@Override
 	public int getGoalCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return goals.size();
 	}
 
 	@Override
 	public boolean hasGoalAt(int targetRow, int targetColumn) {
-		// TODO Auto-generated method stub
+		Position targetGoal = new Position(targetRow, targetColumn);
+		if (goals.contains(targetGoal)) {
+			return true;
+		}
 		return false;
 	}
 

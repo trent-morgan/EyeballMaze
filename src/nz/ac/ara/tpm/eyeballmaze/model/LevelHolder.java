@@ -1,15 +1,20 @@
 package nz.ac.ara.tpm.eyeballmaze.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LevelHolder implements ILevelHolder {
-	private List<Level> levels;
-	public Level currentLevel;
+	private List<Level> levels = new ArrayList<>();
+	private Level currentLevel;
 
 	@Override
 	public void addLevel(int height, int width) {
 		Level level = new Level(height, width);
 		levels.add(level);
+		
+		if (currentLevel == null) {
+            currentLevel = level;
+        }
 	}
 
 	@Override
@@ -32,6 +37,10 @@ public class LevelHolder implements ILevelHolder {
 	@Override
 	public int getLevelCount() {
 		return this.levels.size();
+	}
+	
+	public Level getCurrentLevel() {
+		return this.currentLevel;
 	}
 
 }

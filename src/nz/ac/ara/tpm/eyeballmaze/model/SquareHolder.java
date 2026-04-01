@@ -5,7 +5,7 @@ public class SquareHolder implements ISquareHolder {
 	private final Square[][] squares;
 	
 	public SquareHolder(int height, int width) {
-		squares = new Square[width][height];
+		squares = new Square[height][width];
 	}
 	
 	@Override
