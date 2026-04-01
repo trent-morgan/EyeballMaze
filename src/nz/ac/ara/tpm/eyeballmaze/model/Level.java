@@ -23,6 +23,9 @@ public class Level {
 	}
 	
 	public void addGoal(int row, int column) {
+		if (row < 0 || row > this.height || column < 0 || column > this.width) {
+	        throw new IllegalArgumentException();
+	    }
 		this.goalHolder.addGoal(row, column);
 	}
 
@@ -39,6 +42,9 @@ public class Level {
 	}
 	
 	public void addSquare(Square square, int row, int column) {
+		if (row < 0 || row > this.height || column < 0 || column > this.width) {
+	        throw new IllegalArgumentException();
+	    }
 		this.squareHolder.addSquare(square, row, column);
 	}
 
@@ -48,6 +54,10 @@ public class Level {
 
 	public Shape getShapeAt(int row, int column) {
 		return this.squareHolder.getShapeAt(row, column);
+	}
+	
+	public void checkGoal(int row, int column) {
+		this.goalHolder.checkGoal(row, column);
 	}
 
 }

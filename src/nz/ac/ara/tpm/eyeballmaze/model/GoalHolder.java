@@ -5,6 +5,8 @@ import java.util.List;
 
 public class GoalHolder implements IGoalHolder {
 	private List<Position> goals = new ArrayList<>();
+	private List<Position> completedGoals = new ArrayList<>();
+
 	
 	@Override
 	public void addGoal(int row, int column) {
@@ -21,17 +23,20 @@ public class GoalHolder implements IGoalHolder {
 
 	@Override
 	public boolean hasGoalAt(int targetRow, int targetColumn) {
-		Position targetGoal = new Position(targetRow, targetColumn);
-		if (goals.contains(targetGoal)) {
-			return true;
-		}
-		return false;
+		return goals.contains(new Position(targetRow, targetColumn));
 	}
 
 	@Override
 	public int getCompletedGoalCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return completedGoals.size();
+	}
+	
+	public void checkGoal(int row, int column) {
+		Position goal = new Position(row, column);
+		if (goals.contains(goal)) {
+			completedGoals.add(goal);
+			goals.remove(goal);
+		}
 	}
 
 }

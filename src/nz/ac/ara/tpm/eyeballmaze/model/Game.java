@@ -64,6 +64,9 @@ public class Game implements IMoving, IEyeballHolder {
 	
 	// NEED TO DO
 	public void addEyeball(int row, int column, Direction direction) {
+		if (row < 0 || row > this.getLevelHeight() || column < 0 || column > this.getLevelWidth()) {
+	        throw new IllegalArgumentException();
+	    }
 		this.eyeballHolder.addEyeball(row, column, direction);
 	}
 
@@ -218,6 +221,14 @@ public class Game implements IMoving, IEyeballHolder {
 		    }
 		    
 		    this.addEyeball(destinationRow, destinationColumn, newDirection);
+		    if (this.hasGoalAt(oldRow, oldCol)) {
+	            this.addSquare(new BlankSquare(), oldRow, oldCol);
+	        }
+		    this.checkGoal(destinationRow, destinationColumn);
 		}
+	}
+	
+	public void checkGoal(int row, int column) {
+		this.levelHolder.checkGoal(row, column);
 	}
 }

@@ -12,9 +12,7 @@ public class LevelHolder implements ILevelHolder {
 		Level level = new Level(height, width);
 		levels.add(level);
 		
-		if (currentLevel == null) {
-            currentLevel = level;
-        }
+		currentLevel = level;
 	}
 
 	@Override
@@ -31,6 +29,9 @@ public class LevelHolder implements ILevelHolder {
 
 	@Override
 	public void setCurrentLevel(int levelNumber) {
+		if (levelNumber < 0 || levelNumber >= levels.size()) {
+	        throw new IllegalArgumentException();
+	    }
 		this.currentLevel = levels.get(levelNumber);
 	}
 
@@ -41,6 +42,10 @@ public class LevelHolder implements ILevelHolder {
 	
 	public Level getCurrentLevel() {
 		return this.currentLevel;
+	}
+	
+	public void checkGoal(int row, int column) {
+		this.currentLevel.checkGoal(row, column);
 	}
 
 }
