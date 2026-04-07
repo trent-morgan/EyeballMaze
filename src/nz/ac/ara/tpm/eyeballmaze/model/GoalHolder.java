@@ -40,3 +40,4 @@ public class GoalHolder implements IGoalHolder {
 	}
 
 }
+ 

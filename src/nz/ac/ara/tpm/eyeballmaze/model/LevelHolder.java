@@ -17,13 +17,11 @@ public class LevelHolder implements ILevelHolder {
 
 	@Override
 	public int getLevelWidth() {
-		//add exceptions
 		return currentLevel.getLevelWidth();
 	}
 
 	@Override
 	public int getLevelHeight() {
-		//add exceptions
 		return currentLevel.getLevelHeight();
 	}
 
